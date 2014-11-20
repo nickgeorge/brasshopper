@@ -45,6 +45,18 @@ Walker.WIDTH = .5;
 Walker.prototype.advanceWalker = function(dt) {
   this.advanceBasics(dt);
 
+  if (this.isViewTransitioning) {
+    this.viewTransitionT += 3 * dt;
+    if (this.viewTransitionT >= 1) {
+      this.viewTransitionT = 1;
+      this.isViewTransitioning = false;
+    }
+    quat.slerp(this.viewRotation,
+        this.initialViewRotation,
+        this.terminalViewRotation,
+        this.viewTransitionT);
+  }
+
   if (this.landed) {
     if (!this.ground.contains_lc(
         this.ground.worldToLocalCoords(vec3.temp, this.position))) {
@@ -72,23 +84,21 @@ Walker.prototype.land = function(ground) {
       this.getNormal(),
       this.ground.getNormal());
 
-  if (this.viewRotation) {
-    if (this.isViewTransitioning) {
-      quat.copy(this.viewRotation, this.terminalViewRotation);
-    }
-    var conjugateRotation = quat.conjugate(cache.conjugateRotation, rotation);
-    var viewMultiplier = quat.multiply(cache.viewMultiplier,
-        quat.conjugate(quat.temp,
-            this.upOrientation),
-        conjugateRotation);
-    quat.multiply(viewMultiplier, viewMultiplier, this.upOrientation);
-
-    quat.multiply(this.initialViewRotation, viewMultiplier, this.viewRotation);
-    quat.copy(this.terminalViewRotation, this.viewRotation);
-    quat.copy(this.viewRotation, this.initialViewRotation);
-    this.viewTransitionT = 0;
-    this.isViewTransitioning = true;
+  if (this.isViewTransitioning) {
+    quat.copy(this.viewRotation, this.terminalViewRotation);
   }
+  var conjugateRotation = quat.conjugate(cache.conjugateRotation, rotation);
+  var viewMultiplier = quat.multiply(cache.viewMultiplier,
+      this.getConjugateUp(),
+      conjugateRotation);
+  quat.multiply(viewMultiplier, viewMultiplier, this.upOrientation);
+
+  quat.multiply(this.initialViewRotation, viewMultiplier, this.viewRotation);
+  quat.copy(this.terminalViewRotation, this.viewRotation);
+  quat.copy(this.viewRotation, this.initialViewRotation);
+  this.viewTransitionT = 0;
+  this.isViewTransitioning = true;
+
   quat.multiply(this.upOrientation, rotation, this.upOrientation);
 };
 
@@ -97,37 +107,40 @@ Walker.prototype.land = function(ground) {
  * @param  {boolean=} opt_neverMaglock
  */
 Walker.prototype.unland = function(opt_neverMaglock) {
-  var maglock = this.maglock && !opt_neverMaglock;
   var oldGround = this.ground;
   this.landed = false;
   this.ground = null;
   quat.copy(this.movementUp, this.upOrientation);
 
 
-  if (maglock) {
-    var groundRoot = oldGround.getRoot();
-    var closestEncounter = null;
-    var p_0_gr = groundRoot.worldToLocalCoords(vec3.create(), this.lastPosition);
-    var p_1_gr = groundRoot.worldToLocalCoords(vec3.create(), this.position);
-
-    util.array.forEach(groundRoot.getParts(), function(part) {
-      if (part == oldGround) return;
-      var encounter = part.findEncounter(p_0_gr, p_1_gr, Walker.HEIGHT, {
-        exclude: oldGround,
-        tolerance: Walker.HEIGHT * 2,
-      });
-
-      if (!encounter) return;
-      if (!closestEncounter || encounter.distance < closestEncounter.distance) {
-        closestEncounter = encounter;
-      }
-    }, this);
-    if (closestEncounter) {
-      closestEncounter.part.snapIn(this);
-      this.land(closestEncounter.part);
-    }
+  if (this.maglock && !opt_neverMaglock) {
+    this.tryMaglock(oldGround);
   }
 
+};
+
+Walker.prototype.tryMaglock = function(oldGround) {
+  var groundRoot = oldGround.getRoot();
+  var closestEncounter = null;
+  var p_0_lc = groundRoot.worldToLocalCoords(vec3.create(), this.lastPosition);
+  var p_1_lc = groundRoot.worldToLocalCoords(vec3.create(), this.position);
+
+  util.array.forEach(groundRoot.getParts(), function(part) {
+    if (part == oldGround) return;
+    var encounter = part.findEncounter(p_0_lc, p_1_lc, Walker.HEIGHT, {
+      exclude: oldGround,
+      tolerance: Walker.HEIGHT * 2,
+    });
+
+    if (!encounter) return;
+    if (!closestEncounter || encounter.distance < closestEncounter.distance) {
+      closestEncounter = encounter;
+    }
+  }, this);
+  if (closestEncounter) {
+    closestEncounter.part.snapIn(this);
+    this.land(closestEncounter.part);
+  }
 };
 
 Walker.prototype.isLandedOn = function(ground) {

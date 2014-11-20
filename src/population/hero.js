@@ -64,18 +64,6 @@ Hero.WIDTH = .5;
 Hero.prototype.advance = function(dt) {
   this.advanceWalker(dt);
 
-  if (this.isViewTransitioning) {
-    this.viewTransitionT += 3 * dt;
-    if (this.viewTransitionT >= 1) {
-      this.viewTransitionT = 1;
-      this.isViewTransitioning = false;
-    }
-    quat.slerp(this.viewRotation,
-        this.initialViewRotation,
-        this.terminalViewRotation,
-        this.viewTransitionT);
-  }
-
   if (this.landed) {
     var sum = Math.abs(this.keyMove[0]) + Math.abs(this.keyMove[2]);
     var factor = sum == 2 ? 1/util.math.ROOT_2 : 1;
@@ -123,21 +111,7 @@ Hero.prototype.advance = function(dt) {
 Hero.prototype.land = function(ground) {
   goog.base(this, 'land', ground);
 
-  if (this.ground.getRoot().getType() == Shelf.type) {
-    Env.world.things.forEach(function(thing) {
-      if (thing.getType() == DumbCrate.type) {
-        if (thing.claimed) {
-          thing.claimed = false;
-
-          thing.box.color = [1, 0, 0, .75];
-          thing.transluscent = true;
-        }
-      }
-    });
-  }
-
-
-  this.landAudio.currentTime = 0;
+  this.unclaimCrates();
   this.landAudio.maybePlay();
 };
 
@@ -151,6 +125,21 @@ Hero.prototype.jump = function() {
   this.unland(true);
 
   this.jumpAudio.maybePlay();
+};
+
+Hero.prototype.unclaimCrates = function() {
+  if (this.ground.getRoot().getType() == Shelf.type) {
+    Env.world.things.forEach(function(thing) {
+      if (thing.getType() == DumbCrate.type) {
+        if (thing.claimed) {
+          thing.claimed = false;
+
+          thing.box.color = [1, 0, 0, .75];
+          thing.transluscent = true;
+        }
+      }
+    });
+  }
 };
 
 

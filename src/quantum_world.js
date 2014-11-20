@@ -112,16 +112,6 @@ QuantumWorld.prototype.advance = function(dt) {
 
 
 QuantumWorld.prototype.populate = function() {
-  this.light = new Light({
-    ambientColor: [this.ambientCoefficient,
-      this.ambientCoefficient,
-      this.ambientCoefficient
-    ],
-
-    directionalColor: [.8, .6, .4],
-    // directionalColor: [1, 0, 0]
-  });
-  this.addLight(this.light);
 
   this.shelf = new Shelf({
     position: [0, 0, 0],
@@ -196,6 +186,14 @@ QuantumWorld.prototype.populate = function() {
     this.addThing(fella);
   }
 
+  this.light = new Light({
+    ambientColor: [this.ambientCoefficient,
+      this.ambientCoefficient,
+      this.ambientCoefficient
+    ],
+    directionalColor: [.8, .6, .4],
+  });
+
   var sun = new Sun({
     yaw: 0 * Math.random() * 2 * Math.PI,
     pitch: 0 * Math.random() * 2 * Math.PI,
@@ -207,10 +205,11 @@ QuantumWorld.prototype.populate = function() {
   });
   this.light.anchor = sun;
   this.addThing(sun);
+  this.addLight(this.light);
 
   this.camera = new FpsCamera({});
   this.hero = new Hero({
-    position: [0, -this.shelf.size[1]/2+5, 0]
+    position: [0, -95, 0]
   });
   this.camera.setAnchor(this.hero);
   this.addThing(this.hero);

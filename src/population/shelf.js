@@ -31,6 +31,19 @@ Shelf = function(message) {
 goog.inherits(Shelf, Thing);
 Types.registerType(Shelf, QuantumTypes.SHELF);
 
+
+Shelf.readMessage = function(reader) {
+  return {
+    klass: Shelf,
+    alive: reader.readInt8(),
+    position: reader.readVec3(),
+    velocity: reader.readVec3(),
+    upOrientation: reader.readVec4(),
+    size: reader.readVec3()
+  }
+};
+
+
 Shelf.prototype.getOuterRadius = function() {
   return this.box.getOuterRadius();
 };

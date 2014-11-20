@@ -32,6 +32,24 @@ goog.inherits(DumbCrate, Thing);
 Types.registerType(DumbCrate, QuantumTypes.DUMB_CRATE);
 
 
+DumbCrate.readMessage = function(reader) {
+  return {
+    klass: DumbCrate,
+    alive: reader.readInt8(),
+    position: reader.readVec3(),
+    velocity: reader.readVec3(),
+    upOrientation: reader.readVec4(),
+    size: reader.readVec3()
+  }
+};
+
+DumbCrate.prototype.update = function(message) {
+  this.velocity = message.velocity;
+  this.position = message.position;
+  this.upOrientation = message.upOrientation;
+  this.size = message.size;
+};
+
 DumbCrate.prototype.getOuterRadius = function() {
   return this.box.getOuterRadius();
 };

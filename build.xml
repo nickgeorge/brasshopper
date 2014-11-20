@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<project basedir="." default="build_and_fix">
+  <import file="../worldJS/build.xml" as="worldJS"/>
+
+  <target name="build_and_fix" depends="compile, fix_srcmap"/>
+
+  <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
+      classpath="/Users/nick/git/closure-compiler/build/compiler.jar"/>
+
+  <path id="src.js.fileset">
+    <path refid="worldjs.src.js.fileset"/>
+    <fileset dir="src"><include name="*.js"/></fileset>
+    <fileset dir="src/data"><include name="*.js"/></fileset>
+    <fileset dir="src/effects"><include name="*.js"/></fileset>
+    <fileset dir="src/media"><include name="*.js"/></fileset>
+    <fileset dir="src/population"><include name="*.js"/></fileset>
+    <fileset dir="src/hud"><include name="*.js"/></fileset>
+  </path>
+
+  <target name="compile">
+    <jscomp
+        sourceMapOutputFile="./quantum.js.map"
+        languageIn="ECMASCRIPT5"
+        compilationLevel="simple"
+        forceRecompile="true"
+        debug="false"
+        warning="verbose"
+        output="quantum.js">
+
+      <externs dir="/Library/WebServer/worldJS/externs">
+        <file name="gl-matrix.js"/>
+        <file name="audio.js"/>
+      </externs>
+
+      <path refid="src.js.fileset" />
+    </jscomp>
+  </target>
+
+  <target name="fix_srcmap">
+    <exec executable="perl">
+        <arg value="-pi"/>
+        <arg value="-e"/>
+        <arg value="
+          s/\/Library\/WebServer\/quantum\///g;
+        "/>
+        <arg value="quantum.js.map"/>
+    </exec>
+    <exec executable="perl">
+        <arg value="-pi"/>
+        <arg value="-e"/>
+        <arg value="
+          s/\/Library\/WebServer\/worldJS\//\/worldJS\//g;
+        "/>
+        <arg value="quantum.js.map"/>
+    </exec>
+  </target>
+
+</project>
