@@ -72,19 +72,19 @@ QuantumCollisionManager.prototype.registerCollisionConditions = function() {
       CollisionFunctions.FELLA_AND_RAIL);
 
   this.registerCollisionCondition(Shelf, Hero,
-      util.fn.constant(Hero.HEIGHT),
+      util.fn.constant(Walker.HEIGHT),
       CollisionFunctions.BOXLIKE_AND_HERO);
   this.registerCollisionCondition(Shelf, Fella,
-      util.fn.constant(Hero.HEIGHT),
+      util.fn.constant(Walker.HEIGHT),
       CollisionFunctions.BOXLIKE_AND_HERO);
   this.registerCollisionCondition(DumbCrate, Fella,
-      util.fn.constant(Hero.HEIGHT),
+      util.fn.constant(Walker.HEIGHT),
       CollisionFunctions.BOXLIKE_AND_HERO);
   this.registerCollisionCondition(DumbCrate, Hero,
-      util.fn.constant(Hero.HEIGHT),
+      util.fn.constant(Walker.HEIGHT),
       CollisionFunctions.BOXLIKE_AND_HERO);
   // this.registerCollisionCondition(Sphere, Hero,
-  //     util.fn.constant(Hero.HEIGHT),
+  //     util.fn.constant(Walker.HEIGHT),
   //     CollisionFunctions.SPHERELIKE_AND_HERO);
 };
 
@@ -124,36 +124,36 @@ CollisionFunctions = {
     // if (hero.isLanded() && hero.ground.getRoot() == boxlike) {
     //   return;
     // }
-    var encounter = boxlike.findThingEncounter(hero, Hero.HEIGHT);
+    var encounter = boxlike.findThingEncounter(hero, Walker.HEIGHT);
     if (!encounter) return;
     var part = encounter.part;
 
     var wasLanded = hero.isLanded();
     var isOnGround = hero.isLandedOn(part);
     if (!isOnGround) {
-      var plumb = vec3.set(vec3.temp, 0, -Hero.HEIGHT, 0);
-      vec3.transformQuat(plumb, plumb, hero.upOrientation);
-      part.worldToLocalCoords(plumb, plumb, 0);
-      // TODO: wha?!
-      if (plumb[2] < 0 || true) {
-        var cosAngle = vec3.dot(plumb, vec3.NEG_K)/Hero.HEIGHT;
-        if (cosAngle > .55 || true) {
+      // var plumb = vec3.set(vec3.temp, 0, -Walker.HEIGHT, 0);
+      // vec3.transformQuat(plumb, plumb, hero.upOrientation);
+      // part.worldToLocalCoords(plumb, plumb, 0);
+      // // TODO: wha?!
+      // if (plumb[2] < 0 || true) {
+      //   var cosAngle = vec3.dot(plumb, vec3.NEG_K)/Walker.HEIGHT;
+      //   if (cosAngle > .55 || true) {
           // TODO: Adjust height
           hero.land(part);
           isOnGround = true;
-        }
-      }
+        // }
+      // }
     }
 
     var heroPosition_lc = part.worldToLocalCoords(vec3.temp, hero.position);
     heroPosition_lc[2] = isOnGround ?
-        Hero.HEIGHT + .001 :
-        Math.max(Hero.WIDTH + .001, heroPosition_lc[2]);
+        Walker.HEIGHT + .001 :
+        Math.max(Walker.WIDTH + .001, heroPosition_lc[2]);
     part.localToWorldCoords(hero.position, heroPosition_lc);
   },
 
   SPHERELIKE_AND_HERO: function(spherelike, hero) {
-    var encounter = spherelike.findThingEncounter(hero, Hero.HEIGHT);
+    var encounter = spherelike.findThingEncounter(hero, Walker.HEIGHT);
     if (!encounter) return;
     var part = encounter.part;
 
@@ -161,7 +161,7 @@ CollisionFunctions = {
 
     var heroPosition_lc = part.worldToLocalCoords(vec3.temp, hero.position);
     vec3.scale(heroPosition_lc, heroPosition_lc,
-        (part.radius + Hero.WIDTH + .001)/vec3.length(heroPosition_lc));
+        (part.radius + Walker.WIDTH + .001)/vec3.length(heroPosition_lc));
     part.localToWorldCoords(hero.position, heroPosition_lc);
 
     var heroVelocity_lc = part.worldToLocalCoords(vec3.temp, hero.velocity, 0);

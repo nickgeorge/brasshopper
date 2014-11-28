@@ -23,7 +23,7 @@ Bullet = function(message) {
     rYaw: 100,
     rPitch: 100,
     rRoll: 100,
-    color: [1, .3, .8, 1],
+    color: [.3, .3, 1, 1],
   });
   this.parts = [this.sphere];
 

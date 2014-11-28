@@ -1,7 +1,6 @@
 <html>
   <head>
-    test
-    <title>Quantum</title>
+    <title>Brasshopper</title>
     <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
@@ -9,7 +8,7 @@
     <link rel="stylesheet" href="/worldJS/style.css" type="text/css" />
 
     <script src="/worldJS/gl-matrix.js"></script>
-    <script src="/quantum/quantum.js"></script>
+    <script src="/brasshopper/brasshopper.js"></script>
 
 
     <script type="text/javascript">
@@ -23,10 +22,10 @@
             addWidget(new Crosshair()).
             addWidget(new Fraps(-100, 25)).
             addWidget(new StartButton()).
-            addWidget(new ScoreCard(25, 25)).
-            addWidget(new UpdatingWriter(25, -100, function() {
-              return 'Rails: ' + Env.world.hero.railAmmo;
-            }));
+            addWidget(new ScoreCard(25, 25));
+            // addWidget(new UpdatingWriter(25, -100, function() {
+            //   return 'Rails: ' + Env.world.hero.railAmmo;
+            // }));
             // addWidget(new UpdatingWriter(25, 25, function() {
             //   var t = Math.floor(Env.world.age);
             //   return  Math.floor(t/60) + (t%60 < 10 ? ':0' : ':') + t%60;
@@ -56,12 +55,13 @@
         Env.setEnvironment(world, hud, gl, client);
         Textures.initTextures(TextureList);
         Animator.initSingleton(world, hud);
-
+        var animator = Animator.getInstance();
+        // animator.setDrawOnTick(false);
 
         world.populate();
         resizer.resize();
-        Animator.getInstance().setPaused(true);
-        Animator.getInstance().start();
+        animator.setPaused(true);
+        animator.start();
       }
     </script>
   </head>

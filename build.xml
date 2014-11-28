@@ -19,13 +19,13 @@
 
   <target name="compile">
     <jscomp
-        sourceMapOutputFile="./quantum.js.map"
+        sourceMapOutputFile="./brasshopper.js.map"
         languageIn="ECMASCRIPT5"
         compilationLevel="simple"
         forceRecompile="true"
         debug="false"
         warning="verbose"
-        output="quantum.js">
+        output="brasshopper.js">
 
       <externs dir="/Library/WebServer/worldJS/externs">
         <file name="gl-matrix.js"/>
@@ -41,9 +41,9 @@
         <arg value="-pi"/>
         <arg value="-e"/>
         <arg value="
-          s/\/Library\/WebServer\/quantum\///g;
+          s/\/Library\/WebServer\/brasshopper\///g;
         "/>
-        <arg value="quantum.js.map"/>
+        <arg value="brasshopper.js.map"/>
     </exec>
     <exec executable="perl">
         <arg value="-pi"/>
@@ -51,7 +51,7 @@
         <arg value="
           s/\/Library\/WebServer\/worldJS\//\/worldJS\//g;
         "/>
-        <arg value="quantum.js.map"/>
+        <arg value="brasshopper.js.map"/>
     </exec>
   </target>
 

@@ -15,7 +15,7 @@ DumbCrate = function(message) {
   this.size = message.size;
   this.box = new Box({
     size: message.size,
-    texture: message.texture,
+    texture: Textures.get(TextureList.THWOMP),
     texturesByFace: message.texturesByFace,
     textureCounts: message.textureCounts,
     textureCountsByFace: message.textureCountsByFace,

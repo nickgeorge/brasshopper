@@ -22,5 +22,6 @@ TextureList = {
   KARL: textureRoot_ + 'karl.jpg',
   QUICKSILVER: textureRoot_ + 'quicksilver.jpg',
   GRANITE: textureRoot_ + 'granite_raw.jpg',
+  FIRE: textureRoot_ + 'fire_crop_square.jpg',
 };
 

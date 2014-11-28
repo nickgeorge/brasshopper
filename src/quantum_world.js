@@ -25,7 +25,7 @@ QuantumWorld = function() {
 
   this.light = null;
   this.setBackgroundColor([0, 0, 0, 1]);
-  this.setCollisionManager(new QuantumCollisionManager(this));
+  // this.setCollisionManager(new QuantumCollisionManager(this));
 
   this.playMusic = false;
   this.music = Sounds.get(SoundList.SPLIT_YOUR_INFINITIVES);
@@ -38,14 +38,15 @@ QuantumWorld = function() {
 
   this.G = 35;
 
+  this.sendEvents = true;
 
   this.scoreMap = [];
   this.nameMap = {};
 
-  this.ambientCoefficient = .42
-  new Twiddler(this, 'ambientCoefficient', .025);
+  this.ambientCoefficient = .42;
 
   this.inputAdapter = new WorldInputAdapter().
+      setMouseMoveHandler(this.onMouseMove, this).
       setMouseButtonHandler(this.onMouseButton, this).
       setKeyHandler(this.onKey, this).
       setPointerLockChangeHandler(this.onPointerLockChange, this);
@@ -113,79 +114,6 @@ QuantumWorld.prototype.advance = function(dt) {
 
 QuantumWorld.prototype.populate = function() {
 
-  this.shelf = new Shelf({
-    position: [0, 0, 0],
-    size: [200, 200, 200],
-    texture: Textures.get(TextureList.WALL),
-    textureCounts: [50, 50],
-    color: [1, 1, 1, 1]
-  })
-  this.addThing(this.shelf);
-
-  var addThings = true;
-
-  if (addThings) {
-    for (var k = 0; k < 25; k++) {
-      var dumbCrate = new DumbCrate({
-
-        position: [
-          (Math.random() - .5) * this.shelf.size[0],
-          (Math.random() - .5) * this.shelf.size[1],
-          (Math.random() - .5) * this.shelf.size[2],
-        ],
-        size: [
-          5 + Math.random() * 25,
-          5 + Math.random() * 25,
-          5 + Math.random() * 25,
-        ],
-        texture: Textures.get(TextureList.THWOMP),
-        textureCounts: [1, 1],
-        pitch: Math.random() * 2*Math.PI,
-        yaw: Math.random() * 2*Math.PI,
-        roll: Math.random() * 2*Math.PI,
-        isStatic: true
-      });
-      this.addThing(dumbCrate);
-
-    }
-    for (var k = 0; k < 0; k++) {
-      var sphere = new Sphere({
-
-        position: [
-          (Math.random() - .5) * this.shelf.size[0],
-          (Math.random() - .5) * this.shelf.size[1],
-          (Math.random() - .5) * this.shelf.size[2],
-        ],
-        radius: 1.5 + Math.random()*7,
-        texture: Textures.get(TextureList.EARTH),
-        pitch: Math.random()*2*Math.PI,
-        roll: Math.random()*2*Math.PI,
-        rYaw: (2*Math.random() - 1) * 2*Math.random() * Math.PI,
-        latitudeCount: 25,
-        longitudeCount: 25
-      });
-      this.addThing(sphere);
-    }
-  }
-
-  for (var i = 0; i < 300 * 1 + 0; i++) {
-    var fella = new Fella({
-      position: [
-        0, 0, 0
-        // util.math.random(-40, 40),
-        // -this.shelf.size[1]/2 + 5,
-      // util.math.random(-40, 40)
-      ],
-      // speed: 4 + Math.random() * 2,
-      speed: 3,
-      color: vec4.WHITE,
-      yaw: Math.random()*2*Math.PI,
-      pitch: Math.random()*2*Math.PI,
-      rYaw: Math.random()*2 - 1
-    });
-    this.addThing(fella);
-  }
-
   this.light = new Light({
     ambientColor: [this.ambientCoefficient,
       this.ambientCoefficient,
@@ -209,7 +137,7 @@ QuantumWorld.prototype.populate = function() {
 
   this.camera = new FpsCamera({});
   this.hero = new Hero({
-    position: [0, -95, 0]
+    position: [0, 0, 0]
   });
   this.camera.setAnchor(this.hero);
   this.addThing(this.hero);
@@ -225,15 +153,27 @@ QuantumWorld.prototype.onMouseButton = function(event) {
   if (!this.inputAdapter.isPointerLocked()) {
     ContainerManager.getInstance().setPointerLock(true);
     Animator.getInstance().setPaused(false);
+    this.sendEvents = true;
   }
 };
 
-
 QuantumWorld.prototype.onKey = function(event) {
+  if (Env.client.socket.readyState) {
+    Env.client.sendKeyEvent(event.type == 'keydown', event.keyCode);
+  }
+
   if (event.type == 'keydown') {
     switch (event.keyCode) {
       case KeyCode.F:
         ContainerManager.getInstance().setFullScreen(true);
+        break;
+
+      case KeyCode.M:
+        this.setMusicPaused(!this.music.paused);
+        break;
+
+      case KeyCode.P:
+        Env.client.sendCode(MessageCode.RESTART);
         break;
 
       case KeyCode.N:
@@ -242,31 +182,37 @@ QuantumWorld.prototype.onKey = function(event) {
         });
         break;
 
-      case KeyCode.M:
-        this.setMusicPaused(!this.music.paused);
-        break;
-
       case KeyCode.ENTER:
         PromptBox.ask('Speak:', function(msg) {
           if (msg) Env.client.say(msg);
         });
         break;
 
-      case KeyCode.ESC:
-        Animator.getInstance().setPaused(true);
-        break;
-
       case KeyCode.O:
         Sounds.on = !Sounds.on;
         break;
+
+      case KeyCode.ESC:
+        // Animator.getInstance().togglePause();
+        this.sendEvents = !this.sendEvents;
+        break
     }
   }
 };
 
 
+QuantumWorld.prototype.onMouseMove = function(event) {
+  if (!this.sendEvents) return;
+  var movementX = this.inputAdapter.getMovementX(event);
+  var movementY = this.inputAdapter.getMovementY(event);
+  Env.client.sendMouseMoveEvent(movementX, movementY);
+};
+
+
 QuantumWorld.prototype.onPointerLockChange = function(event) {
   if (!ContainerManager.getInstance().isPointerLocked()) {
-    Animator.getInstance().setPaused(true);
+    // Animator.getInstance().setPaused(true);
+    this.sendEvents = false;
   }
 };
 
@@ -340,9 +286,6 @@ QuantumWorld.prototype.draw = function() {
       drawable.draw();
     });
   }
-
-  // console.log("rendered " + inFocus);
-
   Env.gl.popViewMatrix();
 };
 
