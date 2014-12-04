@@ -45,6 +45,9 @@ QuantumWorld = function() {
 
   this.ambientCoefficient = .42;
 
+  this.fpsCamera = null;
+  this.freeCamera = null;
+
   this.inputAdapter = new WorldInputAdapter().
       setMouseMoveHandler(this.onMouseMove, this).
       setMouseButtonHandler(this.onMouseButton, this).
@@ -135,12 +138,15 @@ QuantumWorld.prototype.populate = function() {
   this.addThing(sun);
   this.addLight(this.light);
 
-  this.camera = new FpsCamera({});
-  this.hero = new Hero({
-    position: [0, 0, 0]
-  });
-  this.camera.setAnchor(this.hero);
-  this.addThing(this.hero);
+  this.fpsCamera = new FpsCamera({});
+  this.freeCamera = new FreeCamera({});
+
+  this.camera = this.fpsCamera;
+  // this.hero = new Hero({
+  //   position: [0, 0, 0;]
+  // });
+  // this.camera.setAnchor(this.hero)
+  // this.addThing(this.hero);
 };
 
 
@@ -221,6 +227,7 @@ QuantumWorld.prototype.onPointerLockChange = function(event) {
 
 QuantumWorld.prototype.draw = function() {
   Env.gl.reset(this.backgroundColor);
+  if (!this.hero) return;
 
   Env.gl.pushViewMatrix();
 

@@ -1,4 +1,5 @@
 goog.provide('Hero');
+goog.provide('Hero.Proto');
 
 goog.require('Gimble');
 goog.require('QuantumTypes');
@@ -39,6 +40,8 @@ Hero = function(message) {
   this.sensitivityX = .0035;
   this.sensitivityY = .0035;
 
+
+  this.updateProto = new Hero.Proto();
 
   this.objectCache.thing = {
     rotY: quat.create(),
@@ -206,23 +209,39 @@ Hero.prototype.registerKill = function(fella, bullet) {
 };
 
 
-Hero.prototype.update = function(message) {
-  this.velocity = message.velocity;
-  this.position = message.position;
-  this.upOrientation = message.upOrientation;
-  this.viewRotation = message.viewRotation;
-  // this.setColor(message.color);
+Hero.prototype.updateFromReader = function(reader) {
+  var proto = this.updateProto;
+  proto.read(reader);
+
+  this.alive = proto.alive.get();
+  vec3.copy(this.position, proto.position.get());
+  vec3.copy(this.velocity, proto.velocity.get());
+// console.log(this);
+  quat.copy(this.upOrientation, proto.upOrientation.get());
+  quat.copy(this.viewRotation, proto.viewRotation.get());
 };
 
 
-Hero.readMessage = function(reader) {
-  var msg = {
-    klass: Hero,
-    alive: reader.readInt8(),
-    position: reader.readVec3(),
-    velocity: reader.readVec3(),
-    upOrientation: reader.readVec4(),
-    viewRotation: reader.readVec4(),
-  }
-  return msg;
+Hero.newFromReader = function(reader) {
+  var proto = new Hero.Proto();
+  proto.read(reader);
+  return new Hero({
+    alive: proto.alive.get(),
+    position: proto.position.get(),
+    velocity: proto.velocity.get(),
+    upOrientation: proto.upOrientation.get(),
+    viewRotation: proto.viewRotation.get(),
+  });
 };
+
+
+/**
+ * @constructor
+ * @struct
+ * @extends {Thing.Proto}
+ */
+Hero.Proto = function() {
+  goog.base(this);
+  this.viewRotation = this.addField(10, new QuatField());
+};
+goog.inherits(Hero.Proto, Thing.Proto);
