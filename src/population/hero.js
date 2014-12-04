@@ -102,6 +102,10 @@ Hero.prototype.advance = function(dt) {
   //   this.walkAudio.loop = false;
   //   this.bobAge = 0;
   // }
+  this.leftLeg.setPitchOnly(this.legAngle);
+  this.rightLeg.setPitchOnly(-this.legAngle);
+  this.rightArm.setPitchOnly(this.legAngle);
+  this.leftArm.setPitchOnly(-this.legAngle);
 };
 
 
@@ -216,9 +220,10 @@ Hero.prototype.updateFromReader = function(reader) {
   this.alive = proto.alive.get();
   vec3.copy(this.position, proto.position.get());
   vec3.copy(this.velocity, proto.velocity.get());
-// console.log(this);
   quat.copy(this.upOrientation, proto.upOrientation.get());
   quat.copy(this.viewRotation, proto.viewRotation.get());
+  quat.copy(this.color, proto.color.get());
+  this.legAngle = proto.legAngle.get();
 };
 
 
@@ -231,6 +236,7 @@ Hero.newFromReader = function(reader) {
     velocity: proto.velocity.get(),
     upOrientation: proto.upOrientation.get(),
     viewRotation: proto.viewRotation.get(),
+    color: proto.color.get(),
   });
 };
 
@@ -243,5 +249,7 @@ Hero.newFromReader = function(reader) {
 Hero.Proto = function() {
   goog.base(this);
   this.viewRotation = this.addField(10, new QuatField());
+  this.color = this.addField(11, new QuatField());
+  this.legAngle = this.addField(12, new FloatField());
 };
 goog.inherits(Hero.Proto, Thing.Proto);

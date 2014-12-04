@@ -108,17 +108,17 @@ Walker.prototype.advance = function(dt) {
   //           dt));
   // }
 
-  if (this.legAngle >= Walker.MAX_LEG_ANGLE) {
-    this.stepDirection = -1;
-  }
-  if (this.legAngle <= -Walker.MAX_LEG_ANGLE) {
-    this.stepDirection = 1;
-  }
-  if (this.isLanded()) {
-    this.legAngle += 5 * this.stepDirection * dt;
-  } else {
-    this.legAngle = Math.PI / 3;
-  }
+  // if (this.legAngle >= Walker.MAX_LEG_ANGLE) {
+  //   this.stepDirection = -1;
+  // }
+  // if (this.legAngle <= -Walker.MAX_LEG_ANGLE) {
+  //   this.stepDirection = 1;
+  // }
+  // if (this.isLanded()) {
+  //   this.legAngle += 5 * this.stepDirection * dt;
+  // } else {
+  //   this.legAngle = Math.PI / 3;
+  // }
 
   vec4.copy(this.head.upOrientation, this.viewRotation);
 };
