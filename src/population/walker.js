@@ -222,7 +222,7 @@ Walker.prototype.buildBody = function() {
     // color: this.color,
     offset: [0, -.5, 0],
     name: "left leg",
-    position: [.1875, -Walker.HEIGHT + 1.1, 0],
+    position: [.1875, -.9, 0],
     isStatic: true,
     texture: boxTexture,
     // color: [201/256., 189/256., 107/256., 1.0],
@@ -235,7 +235,7 @@ Walker.prototype.buildBody = function() {
     // color: this.color,
     offset: [0, -.5, 0],
     name: "left leg",
-    position: [-.1875, -Walker.HEIGHT + 1.1, 0],
+    position: [-.1875, -.9, 0],
     isStatic: true,
     texture: boxTexture,
     // color: [201/256., 189/256., 107/256., 1.0],
@@ -309,6 +309,11 @@ Walker.prototype.buildBody = function() {
     // color: [201/256., 189/256., 107/256., 1.0],
     color: this.color,
   });
+
+  // this.addPart(new Box({
+  //   size: [3, 3, 3],
+  //   color: [1, 1, 1, 1]
+  // }));
 
   this.addParts([
     this.head,

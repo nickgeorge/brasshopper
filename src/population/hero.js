@@ -184,7 +184,7 @@ Hero.prototype.toViewOrientation = function() {
 
 Hero.prototype.getEyePosition = function(out) {
   var bobOffset = vec3.set(this.objectCache.thing.bobOffset,
-      0, Math.sin(-this.bobAge)/3 - Walker.HEIGHT + 2.3, 0);
+      0, Math.sin(-this.bobAge)/3 - Walker.HEIGHT + 2.1, 0);
   vec3.transformQuat(bobOffset,
       bobOffset,
       this.upOrientation);

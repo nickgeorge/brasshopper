@@ -160,6 +160,8 @@ QuantumWorld.prototype.onMouseButton = function(event) {
     ContainerManager.getInstance().setPointerLock(true);
     Animator.getInstance().setPaused(false);
     this.sendEvents = true;
+  } else {
+    Env.client.sendKeyEvent(event.type == 'mousedown', event.button);
   }
 };
 

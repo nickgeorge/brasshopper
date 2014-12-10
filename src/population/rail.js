@@ -9,31 +9,25 @@ goog.require('QuantumTypes');
  * @extends {LeafThing}
  * @struct
  */
-Rail = function(message) {
-  message.drawType = LeafThing.DrawType.ELEMENTS;
-  message.upOrientation =
-      quat.clone(message.anchor.getViewOrientation());
-
-  var middle = message.anchor.fromViewOrientation(
-      Rail.offset);
-  this.normalMultiplier = 1;
-  vec3.add(middle, middle, message.anchor.position);
-  message.position = middle;
-
+Rail = function(proto) {
   this.centers = this.makeCenters();
 
-  message.color = [1, 1, 0, 1];
-  goog.base(this, message);
+  goog.base(this, {
+    color: proto.color.get(),
+    drawType: LeafThing.DrawType.ELEMENTS,
+    upOrientation: proto.upOrientation.get(),
+    position: proto.p0.get(),
+  });
 
   this.transluscent = true;
 
-  this.owner = message.owner;
-  this.anchor = message.anchor;
   this.alive = true;
   this.firstFrame = true;
-  this.p1 = this.localToWorldCoords([], [0, -.2, -300]);
+  this.p1 = proto.p1.get();
   this.damage = 200;
   this.finalize();
+
+  this.updateProto = new Rail.Proto();
 
 };
 goog.inherits(Rail, LeafThing);
@@ -173,3 +167,34 @@ Rail.prototype.getNormalBuffer = function() {
 Rail.prototype.getOuterRadius = function() {
   return 100;
 };
+
+
+Rail.newFromReader = function(reader) {
+  var proto = new Rail.Proto();
+  proto.read(reader);
+  return new Rail(proto);
+};
+
+
+Rail.prototype.updateFromReader = function(reader) {
+  var proto = this.updateProto;
+  proto.read(reader);
+  vec3.copy(this.color, proto.color.get());
+
+  // TODO: handle size change
+};
+
+
+/**
+ * @constructor
+ * @struct
+ * @extends {Proto}
+ */
+Rail.Proto = function() {
+  goog.base(this);
+  this.upOrientation =  this.addField(10, new QuatField());
+  this.color =  this.addField(11, new QuatField());
+  this.p0 =  this.addField(12, new Vec3Field());
+  this.p1 = this.addField(13, new Vec3Field());
+};
+goog.inherits(Rail.Proto, Proto);

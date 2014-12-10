@@ -56,7 +56,7 @@
         Textures.initTextures(TextureList);
         Animator.initSingleton(world, hud);
         var animator = Animator.getInstance();
-        // animator.setDrawOnTick(false);
+        animator.setDrawOnTick(false);
 
         world.populate();
         resizer.resize();

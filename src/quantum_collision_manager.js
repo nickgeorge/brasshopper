@@ -146,9 +146,9 @@ CollisionFunctions = {
     }
 
     var heroPosition_lc = part.worldToLocalCoords(vec3.temp, hero.position);
-    heroPosition_lc[2] = isOnGround ?
+    heroPosition_lc[1] = isOnGround ?
         Walker.HEIGHT + .001 :
-        Math.max(Walker.WIDTH + .001, heroPosition_lc[2]);
+        Math.max(Walker.WIDTH + .001, heroPosition_lc[1]);
     part.localToWorldCoords(hero.position, heroPosition_lc);
   },
 
