@@ -1,8 +1,6 @@
 goog.provide('QuantumWorld');
 
-goog.require('Fella');
 goog.require('Hero');
-goog.require('QuantumCollisionManager');
 goog.require('Shelf');
 goog.require('Sun');
 goog.require('World');
@@ -21,11 +19,8 @@ QuantumWorld = function() {
   this.nameMap = {};
   this.hero = null;
 
-
-
   this.light = null;
   this.setBackgroundColor([0, 0, 0, 1]);
-  // this.setCollisionManager(new QuantumCollisionManager(this));
 
   this.playMusic = false;
   this.music = Sounds.get(SoundList.SPLIT_YOUR_INFINITIVES);
@@ -142,11 +137,6 @@ QuantumWorld.prototype.populate = function() {
   this.freeCamera = new FreeCamera({});
 
   this.camera = this.fpsCamera;
-  // this.hero = new Hero({
-  //   position: [0, 0, 0;]
-  // });
-  // this.camera.setAnchor(this.hero)
-  // this.addThing(this.hero);
 };
 
 
@@ -166,7 +156,7 @@ QuantumWorld.prototype.onMouseButton = function(event) {
 };
 
 QuantumWorld.prototype.onKey = function(event) {
-  if (Env.client.socket.readyState) {
+  if (Env.client.socket.readyState && event.keyCode < 128) {
     Env.client.sendKeyEvent(event.type == 'keydown', event.keyCode);
   }
 
@@ -201,7 +191,6 @@ QuantumWorld.prototype.onKey = function(event) {
         break;
 
       case KeyCode.ESC:
-        // Animator.getInstance().togglePause();
         this.sendEvents = !this.sendEvents;
         break
     }
@@ -219,7 +208,6 @@ QuantumWorld.prototype.onMouseMove = function(event) {
 
 QuantumWorld.prototype.onPointerLockChange = function(event) {
   if (!ContainerManager.getInstance().isPointerLocked()) {
-    // Animator.getInstance().setPaused(true);
     this.sendEvents = false;
   }
 };
@@ -251,19 +239,10 @@ QuantumWorld.prototype.draw = function() {
     this.drawables.forEach(function(drawable) {
       if (drawable.isDisposed) return;
       drawable.computeDistanceSquaredToCamera(cameraPosition);
-      if (drawable.getType() == Fella.type && zCulling) {
-        var positionInView = hero.toViewOrientation(drawable.position,
-            heroConjugateViewOrientation);
-        if (positionInView[2] < 0) {
-          inFocus++;
-          this.opaque.push(drawable);
-        }
+      if (drawable.transluscent) {
+        this.transluscent.push(drawable);
       } else {
-        if (drawable.transluscent) {
-          this.transluscent.push(drawable);
-        } else {
-          this.opaque.push(drawable);
-        }
+        this.opaque.push(drawable);
       }
     }, this);
 
@@ -274,17 +253,15 @@ QuantumWorld.prototype.draw = function() {
 
     for (var type in this.drawablesByType) {
       var things = this.drawablesByType[type];
-      if (type == Fella.type) {
-        this.drawFellas(things);
-      } else {
+      // TODO: DrawFellas for heros.
+      // if (false) {
+      //   this.drawFellas(things);
+      // } else {
         util.array.forEach(things, function(thing) {
           if (!thing.transluscent) thing.draw();
         });
-      }
+      // }
     }
-    // util.array.forEach(this.opaque, function(opaqueDrawable) {
-    //   opaqueDrawable.draw();
-    // });
 
     util.array.forEach(this.transluscent, function(transluscentDrawable) {
       transluscentDrawable.draw();

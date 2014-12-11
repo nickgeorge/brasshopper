@@ -49,98 +49,19 @@ Hero = function(message) {
   };
 
   this.kills = 0;
+
+  this.health = 100;
 };
 goog.inherits(Hero, Walker);
 Types.registerType(Hero, QuantumTypes.HERO);
 
-// Hero.JUMP_VELOCITY = vec3.fromValues(0, 70, -40);
-Hero.JUMP_MODIFIER = 10;
-
 
 Hero.prototype.advance = function(dt) {
-  // this.advanceWalker(dt);
   goog.base(this, 'advance', dt);
-
-  // if (this.landed) {
-  //   var sum = Math.abs(this.keyMove[0]) + Math.abs(this.keyMove[2]);
-  //   var factor = sum == 2 ? 1/util.math.ROOT_2 : 1;
-  //   vec3.set(this.velocity,
-  //       factor * this.v_ground * (this.keyMove[0]),
-  //       0,
-  //       factor * this.v_ground * (this.keyMove[2]));
-  //   if (sum) {
-  //     this.bobAge += dt * 2 * Math.PI / .55;
-  //     if (this.walkAudio.paused) {
-  //       this.walkAudio.loop = true;
-  //       this.walkAudio.currentTime = 0;
-  //       this.walkAudio.maybePlay();
-  //     }
-  //   } else {
-  //     this.walkAudio.loop = false;
-  //     this.bobAge = 0;
-  //   }
-
-  // } else {
-  //   var sum = Math.abs(this.keyMove[0]) + Math.abs(this.keyMove[2]);
-  //   var factor = sum == 2 ? 1/util.math.ROOT_2 : 1;
-  //   var effBoost = vec3.fromValues(
-  //       factor * (this.keyMove[0]),
-  //       0,
-  //       factor * (this.keyMove[2]));
-  //   vec3.scale(effBoost, effBoost, 20);
-
-  //   var v_mp = vec3.transformQuat(vec3.temp,
-  //       this.fromUpOrientation(effBoost),
-  //       quat.conjugate([],this.getMovementUp()));
-
-  //   vec3.add(this.velocity,
-  //       this.velocity,
-  //       vec3.scale(vec3.temp,
-  //           v_mp,
-  //           dt));
-
-  //   this.walkAudio.loop = false;
-  //   this.bobAge = 0;
-  // }
   this.leftLeg.setPitchOnly(this.legAngle);
   this.rightLeg.setPitchOnly(-this.legAngle);
   this.rightArm.setPitchOnly(this.legAngle);
   this.leftArm.setPitchOnly(-this.legAngle);
-};
-
-
-Hero.prototype.land = function(ground) {
-  goog.base(this, 'land', ground);
-
-  this.unclaimCrates();
-  this.landAudio.maybePlay();
-};
-
-
-Hero.prototype.jump = function() {
-  if (!this.isLanded()) return;
-  vec3.set(this.velocity,
-      this.velocity[0] * 1,
-      60,
-      this.velocity[2] * 1);
-  this.unland(true);
-
-  this.jumpAudio.maybePlay();
-};
-
-Hero.prototype.unclaimCrates = function() {
-  if (this.ground.getRoot().getType() == Shelf.type) {
-    Env.world.things.forEach(function(thing) {
-      if (thing.getType() == DumbCrate.type) {
-        if (thing.claimed) {
-          thing.claimed = false;
-
-          thing.box.color = [1, 0, 0, .75];
-          thing.transluscent = true;
-        }
-      }
-    });
-  }
 };
 
 
@@ -190,26 +111,6 @@ Hero.prototype.getEyePosition = function(out) {
       this.upOrientation);
 
   return vec3.add(out, this.position, bobOffset);
-};
-
-
-Hero.prototype.registerKill = function(fella, bullet) {
-  var score = 10;
-  if (bullet.getType() == Bullet.type) score *= 1.5;
-  if (!this.isLanded()) score *= 20;
-  else if (this.ground != this.ground) score *= 5;
-
-  Env.world.score += score;
-
-  if (this.isLanded()) {
-    var groundRoot = this.ground.getRoot();
-    if (groundRoot.getType() == DumbCrate.type && !groundRoot.claimed) {
-      this.captureAudio.maybePlay();
-      groundRoot.claimed = true;
-      groundRoot.box.color = [0, 0, 1, .75];
-      groundRoot.transluscent = true;
-    }
-  }
 };
 
 

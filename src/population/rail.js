@@ -56,11 +56,6 @@ Rail.prototype.advance = function(dt) {
         this.upOrientation,
         Math.random() * 2 * Math.PI);
   }
-  if (this.firstFrame) {
-    this.firstFrame = false;
-  } else if (this.alive) {
-    this.alive = !this.alive;
-  }
 };
 
 
@@ -108,18 +103,6 @@ Rail.prototype.getPositionBuffer = function() {
       this.centers[i+1][0] - size, this.centers[i+1][1] + size, this.centers[i+1][2],
       this.centers[i  ][0] - size, this.centers[i  ][1] + size, this.centers[i  ][2],
       this.centers[i  ][0] - size, this.centers[i  ][1] - size, this.centers[i  ][2],
-
-      // // // Front (z = 1)
-      // this.centers[i+1][0] - size, this.centers[i+1][1] - size, this.centers[i+1][2],
-      // this.centers[i+1][0] + size, this.centers[i+1][1] - size, this.centers[i+1][2],
-      // this.centers[i+1][0] + size, this.centers[i+1][1] + size, this.centers[i+1][2],
-      // this.centers[i+1][0] - size, this.centers[i+1][1] + size, this.centers[i+1][2],
-
-      // // Back (z = -1)
-      // this.centers[i  ][0] - size, this.centers[i  ][1] + size, this.centers[i  ][2],
-      // this.centers[i  ][0] + size, this.centers[i  ][1] + size, this.centers[i  ][2],
-      // this.centers[i  ][0] + size, this.centers[i  ][1] - size, this.centers[i  ][2],
-      // this.centers[i  ][0] - size, this.centers[i  ][1] - size, this.centers[i  ][2],
     ]);
   }
   return Env.gl.generateBuffer(vertexPositionCoordinates, 3);

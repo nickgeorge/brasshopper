@@ -23,24 +23,6 @@
             addWidget(new Fraps(-100, 25)).
             addWidget(new StartButton()).
             addWidget(new ScoreCard(25, 25));
-            // addWidget(new UpdatingWriter(25, -100, function() {
-            //   return 'Rails: ' + Env.world.hero.railAmmo;
-            // }));
-            // addWidget(new UpdatingWriter(25, 25, function() {
-            //   var t = Math.floor(Env.world.age);
-            //   return  Math.floor(t/60) + (t%60 < 10 ? ':0' : ':') + t%60;
-            // })).
-            // addWidget(new UpdatingWriter(25, 50, function() {
-            //   if (!Env.world) return;
-            //   var left = Env.world.killsLeft;
-            //   this.font = 'bold 18px courier';
-            //   if (left == 0) {
-            //     this.font = 'bold 28px wolfenstein';
-            //     this.fillStyle = '#F00';
-            //     return 'Der Job ist Kompl' + String.fromCharCode(235) + 'ten';
-            //   }
-            //   return left + ' crate' + (left == 1 ? '' : 's') + ' left!';
-            // }));
 
         var glCanvas = document.getElementById('gl-canvas');
         ShaderProgram.defaultDomain = '';
