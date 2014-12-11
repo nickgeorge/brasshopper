@@ -31,12 +31,7 @@ Walker = function(message) {
 
   this.movementUp = quat.create();
 
-  this.color = [
-    Math.random() / 2 + .5,
-    Math.random() / 2 + .5,
-    Math.random() / 2 + .5,
-    1
-  ]
+  this.color = vec4.create();
 
 
   this.head = null;
@@ -49,7 +44,6 @@ Walker = function(message) {
 
 
   this.healthBar = new HealthBar({
-
     refThing: this,
     position: [0, .8, 0]
   });
@@ -74,7 +68,6 @@ goog.inherits(Walker, Thing);
 
 
 Walker.HEIGHT = 2;
-Walker.WIDTH = .5;
 
 Walker.MAX_LEG_ANGLE = Math.PI/6;
 
@@ -94,15 +87,6 @@ Walker.prototype.isLandedOn = function(ground) {
   return this.ground == ground;
 };
 
-Walker.prototype.isLanded = function() {
-  return this.landed;
-};
-
-
-Walker.prototype.getOuterRadius = function() {
-  return Walker.HEIGHT;
-};
-
 Walker.prototype.buildBody = function() {
   var boxTexture = Textures.get(TextureList.GRANITE);
   this.leftLeg = new OffsetBox({
@@ -113,7 +97,6 @@ Walker.prototype.buildBody = function() {
     isStatic: true,
     texture: boxTexture,
     color: this.color,
-    // textureCounts: [1, 10]
   });
 
   this.rightLeg = new OffsetBox({
@@ -183,7 +166,6 @@ Walker.prototype.buildBody = function() {
     this.leftArm,
   ]);
 };
-
 
 
 Walker.prototype.drawHead = function() {

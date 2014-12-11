@@ -17,7 +17,6 @@ Hero = function(message) {
 
   this.keyMove = vec3.create();
 
-
   this.v_ground = 20;
   this.v_air = 30;
   this.bobAge = 0;
@@ -63,17 +62,6 @@ Hero.prototype.advance = function(dt) {
   this.rightArm.setPitchOnly(this.legAngle);
   this.leftArm.setPitchOnly(-this.legAngle);
 };
-
-
-/** @override */
-Hero.prototype.getMovementUp = function() {
-  var result = quat.create();
-  return function() {
-    return this.isLanded() ?
-        quat.copy(result, this.upOrientation) :
-        quat.copy(result, this.movementUp);
-  }
-}();
 
 
 Hero.prototype.getConjugateViewOrientation = function() {
