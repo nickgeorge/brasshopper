@@ -19,7 +19,6 @@
 
   <target name="compile">
     <jscomp
-        sourceMapOutputFile="./brasshopper.js.map"
         languageIn="ECMASCRIPT5"
         compilationLevel="simple"
         forceRecompile="true"

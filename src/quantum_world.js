@@ -43,11 +43,11 @@ QuantumWorld = function() {
   this.fpsCamera = null;
   this.freeCamera = null;
 
-  this.inputAdapter = new WorldInputAdapter().
-      setMouseMoveHandler(this.onMouseMove, this).
-      setMouseButtonHandler(this.onMouseButton, this).
-      setKeyHandler(this.onKey, this).
-      setPointerLockChangeHandler(this.onPointerLockChange, this);
+  this.inputAdapter = new WorldInputAdapter(this).
+      setMouseMoveHandler(this.onMouseMove).
+      setMouseButtonHandler(this.onMouseButton).
+      setKeyHandler(this.onKey).
+      setPointerLockChangeHandler(this.onPointerLockChange);
 };
 goog.inherits(QuantumWorld, World);
 

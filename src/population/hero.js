@@ -4,7 +4,6 @@ goog.provide('Hero.Proto');
 goog.require('Gimble');
 goog.require('QuantumTypes');
 goog.require('Walker');
-goog.require('WorldInputAdapter');
 
 
 /**
@@ -17,8 +16,6 @@ Hero = function(message) {
 
   this.keyMove = vec3.create();
 
-  this.v_ground = 20;
-  this.v_air = 30;
   this.bobAge = 0;
 
   this.walkAudio = Sounds.get(SoundList.STEP);
@@ -31,25 +28,17 @@ Hero = function(message) {
 
   this.railAmmo = 3;
 
-  this.gimble = new Gimble({
-    referenceObject: this
-  });
+  // this.gimble = new Gimble({
+  //   referenceObject: this
+  // });
   // Env.world.addEffect(this.gimble);
-
-  this.sensitivityX = .0035;
-  this.sensitivityY = .0035;
 
 
   this.updateProto = new Hero.Proto();
 
   this.objectCache.thing = {
-    rotY: quat.create(),
     bobOffset: vec3.create()
   };
-
-  this.kills = 0;
-
-  this.health = 100;
 };
 goog.inherits(Hero, Walker);
 Types.registerType(Hero, QuantumTypes.HERO);
@@ -57,11 +46,14 @@ Types.registerType(Hero, QuantumTypes.HERO);
 
 Hero.prototype.advance = function(dt) {
   goog.base(this, 'advance', dt);
-  this.leftLeg.setPitchOnly(this.legAngle);
-  this.rightLeg.setPitchOnly(-this.legAngle);
-  this.rightArm.setPitchOnly(this.legAngle);
-  this.leftArm.setPitchOnly(-this.legAngle);
 };
+
+Hero.prototype.setLegAngle = function(legAngle) {
+  this.leftLeg.setPitchOnly(legAngle);
+  this.rightLeg.setPitchOnly(-legAngle);
+  this.rightArm.setPitchOnly(legAngle);
+  this.leftArm.setPitchOnly(-legAngle);
+}
 
 
 Hero.prototype.getConjugateViewOrientation = function() {
@@ -71,35 +63,20 @@ Hero.prototype.getConjugateViewOrientation = function() {
   }
 }();
 
-
-Hero.prototype.fromViewOrientation = function() {
-  var result = vec3.create();
-  return function(a, opt_viewOrientation) {
-    var viewOrientation = opt_viewOrientation || this.getViewOrientation();
-    return vec3.transformQuat(result, a, viewOrientation);
-  };
-}();
-
-
-Hero.prototype.toViewOrientation = function() {
-  var result = vec3.create();
-  return function(a, opt_conjugateViewOrientation) {
-    var conjugateViewOrientation = opt_conjugateViewOrientation ||
-        this.getConjugateViewOrientation();
-    return vec3.transformQuat(result, a, conjugateViewOrientation);
-  };
-}();
-
-
 Hero.prototype.getEyePosition = function(out) {
   var bobOffset = vec3.set(this.objectCache.thing.bobOffset,
-      0, Math.sin(-this.bobAge)/3 - Walker.HEIGHT + 2.1, 0);
+      0, Math.sin(-this.bobAge)/3 + .325, 0);
   vec3.transformQuat(bobOffset,
       bobOffset,
       this.upOrientation);
 
   return vec3.add(out, this.position, bobOffset);
 };
+
+
+// Hero.prototype.getOuterRadius = function() {
+//   return 2;
+// };
 
 
 Hero.prototype.updateFromReader = function(reader) {
@@ -112,7 +89,7 @@ Hero.prototype.updateFromReader = function(reader) {
   quat.copy(this.upOrientation, proto.upOrientation.get());
   quat.copy(this.viewRotation, proto.viewRotation.get());
   quat.copy(this.color, proto.color.get());
-  this.legAngle = proto.legAngle.get();
+  this.setLegAngle(proto.legAngle.get());
 };
 
 

@@ -24,7 +24,6 @@ Rail = function(proto) {
   this.alive = true;
   this.firstFrame = true;
   this.p1 = proto.p1.get();
-  this.damage = 200;
   this.finalize();
 
   this.updateProto = new Rail.Proto();
@@ -32,8 +31,6 @@ Rail = function(proto) {
 };
 goog.inherits(Rail, LeafThing);
 Types.registerType(Rail, QuantumTypes.RAIL);
-
-Rail.offset = vec3.fromValues(0, -.2, 0);
 
 
 Rail.prototype.getP0 = function() {
@@ -44,6 +41,7 @@ Rail.prototype.getP0 = function() {
 Rail.prototype.getP1 = function() {
   return this.p1;
 };
+
 
 Rail.prototype.advance = function(dt) {
   this.color[3] -= dt;
@@ -61,10 +59,12 @@ Rail.prototype.advance = function(dt) {
 
 Rail.prototype.makeCenters = function() {
   var centers = [];
+  var spread = .17
+  // var spread = 0
   for (var i = -300; i < -1; i += .5) {
     centers.push([
-      (Math.random()*2 - 1) * .17,
-      (Math.random()*2 - 1) * .17,
+      (Math.random()*2 - 1) * spread,
+      (Math.random()*2 - 1) * spread,
       i
     ]);
   }
@@ -77,7 +77,8 @@ Rail.prototype.makeCenters = function() {
 
 Rail.prototype.getPositionBuffer = function() {
   var vertexPositionCoordinates = [];
-  var size = .025;
+  // var size = .025;
+  var size = .01;
   for (var i = 0; i < this.centers.length - 1; i++) {
     util.array.pushAll(vertexPositionCoordinates, [
       // Top (y = 1)
@@ -110,8 +111,6 @@ Rail.prototype.getPositionBuffer = function() {
 
 
 Rail.indexBuffer = null;
-
-
 Rail.prototype.getIndexBuffer = function() {
   if (!Rail.indexBuffer) {
     var vertexIndicies = [];
@@ -146,7 +145,6 @@ Rail.prototype.getNormalBuffer = function() {
 };
 
 
-
 Rail.prototype.getOuterRadius = function() {
   return 100;
 };
@@ -163,6 +161,10 @@ Rail.prototype.updateFromReader = function(reader) {
   var proto = this.updateProto;
   proto.read(reader);
   vec3.copy(this.color, proto.color.get());
+
+  vec3.copy(this.position, proto.p0.get());
+  vec3.copy(this.p1, proto.p1.get());
+  // quat.copy(this.upOrientation, proto.upOrientation.get());
 
   // TODO: handle size change
 };

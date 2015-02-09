@@ -1,6 +1,7 @@
 goog.provide('Walker');
 
 goog.require('Thing');
+goog.require('LightningData');
 
 
 /**
@@ -9,27 +10,11 @@ goog.require('Thing');
  * @struct
  */
 Walker = function(message) {
-  message.scale = [3, 3, 30];
   goog.base(this, message);
-
-  this.ground = null;
-  this.gravity = vec3.create();
 
   this.isRoot = true;
 
-  this.maglock = false;
-
-
   this.viewRotation = quat.create();
-  this.isViewTransitioning = false;
-  this.viewTransitionT = 0;
-  this.initialViewRotation = quat.create();
-  this.terminalViewRotation = quat.create();
-
-  this.landed = false;
-  this.magLock = false;
-
-  this.movementUp = quat.create();
 
   this.color = vec4.create();
 
@@ -49,30 +34,21 @@ Walker = function(message) {
   });
   this.addEffect(this.healthBar);
 
-
-  this.objectCache.land = {
-    rotation: quat.create(),
-    viewMultiplier: quat.create(),
-    conjugateRotation: quat.create()
-  };
-
-
-  this.legAngle = (Math.random()*2 - 1) * Walker.MAX_LEG_ANGLE;
-  this.stepDirection = 1;
+  this.legAngle = 0;
   this.leftLeg.setPitchOnly(this.legAngle);
   this.rightLeg.setPitchOnly(-this.legAngle);
   this.rightArm.setPitchOnly(this.legAngle);
   this.leftArm.setPitchOnly(-this.legAngle);
+
+  this.health = 100;
 };
 goog.inherits(Walker, Thing);
 
 
 Walker.HEIGHT = 2;
 
-Walker.MAX_LEG_ANGLE = Math.PI/6;
-
 Walker.prototype.advance = function(dt) {
-  vec4.copy(this.head.upOrientation, this.viewRotation);
+  // vec4.copy(this.head.upOrientation, this.viewRotation);
 };
 
 
@@ -83,9 +59,6 @@ Walker.prototype.getViewOrientation = function() {
   };
 }();
 
-Walker.prototype.isLandedOn = function(ground) {
-  return this.ground == ground;
-};
 
 Walker.prototype.buildBody = function() {
   var boxTexture = Textures.get(TextureList.GRANITE);
@@ -111,7 +84,7 @@ Walker.prototype.buildBody = function() {
 
   this.leftArm = new OffsetBox({
     size: [.115, .9, .115],
-    position: [.45, -Walker.HEIGHT + 1.975, 0],
+    position: [.45, -2 + 1.975, 0],
     offset: [0, -.45, 0],
     roll: 0.25,
     name: "left leg",
@@ -122,7 +95,7 @@ Walker.prototype.buildBody = function() {
   });
   this.rightArm = new OffsetBox({
     size: [.115, .9, .115],
-    position: [-.45, -Walker.HEIGHT + 1.975, 0],
+    position: [-.45, -2 + 1.975, 0],
     offset: [0, -.45, 0],
     roll: -0.25,
     name: "right leg",
@@ -135,9 +108,9 @@ Walker.prototype.buildBody = function() {
   this.head = new OffsetContainer({
     thing: new DataThing({
       texture: boxTexture,
-      data: HeadData,
-      uScale: .015,
-      position: [0, -Walker.HEIGHT + 2.3, -.1],
+      data: LightningData,
+      uScale: .3,
+      position: [0, -2 + 2.3, -.1],
       name: "head",
       color: this.color,
       isStatic: true,
@@ -148,7 +121,7 @@ Walker.prototype.buildBody = function() {
 
   this.torso = new Box({
     size: [.6, 1, .2],
-    position: [0, -Walker.HEIGHT + 1.5, 0],
+    position: [0, -2 + 1.5, 0],
     name: "torso",
     textureCounts: [1, 1],
     isStatic: true,
@@ -157,6 +130,15 @@ Walker.prototype.buildBody = function() {
     color: this.color,
   });
 
+  // this.fakehead = new Box({
+  //   size: [.4, .55, .45],
+  //   position: [0, .3, -.088],
+  //   color: [1, 1, 1, .5]
+  // });
+
+
+
+
   this.addParts([
     this.head,
     this.torso,
@@ -164,6 +146,7 @@ Walker.prototype.buildBody = function() {
     this.leftLeg,
     this.rightArm,
     this.leftArm,
+    // this.fakehead,
   ]);
 };
 
