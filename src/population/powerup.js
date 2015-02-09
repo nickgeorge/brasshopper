@@ -21,6 +21,7 @@ Powerup = function(message) {
     color: [1, 1, 0, 1],
     name: "model",
     isStatic: true,
+    uScale: 1.5,
 
   });
   this.addPart(this.model);
