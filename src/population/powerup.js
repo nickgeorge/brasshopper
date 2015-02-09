@@ -18,7 +18,7 @@ Powerup = function(message) {
 
   this.model = new DataThing({
     data: LightningData,
-    color: [1, 1, 0, 1],
+    color: [1, 1, 0, .6],
     name: "model",
     isStatic: true,
     uScale: 1.5,
