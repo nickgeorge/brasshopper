@@ -108,8 +108,8 @@ Walker.prototype.buildBody = function() {
   this.head = new OffsetContainer({
     thing: new DataThing({
       texture: boxTexture,
-      data: LightningData,
-      uScale: .3,
+      data: HeadData,
+      uScale: 1,
       position: [0, -2 + 2.3, -.1],
       name: "head",
       color: this.color,

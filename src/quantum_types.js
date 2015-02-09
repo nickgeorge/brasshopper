@@ -13,4 +13,5 @@ QuantumTypes = {
   FELLA: 6,
   THROWIN_GURNADE: 7,
   RAIL: 8,
+  POWERUP: 9,
 };

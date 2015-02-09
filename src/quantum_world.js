@@ -48,6 +48,8 @@ QuantumWorld = function() {
       setMouseButtonHandler(this.onMouseButton).
       setKeyHandler(this.onKey).
       setPointerLockChangeHandler(this.onPointerLockChange);
+
+  this.collisionManager = null;
 };
 goog.inherits(QuantumWorld, World);
 
