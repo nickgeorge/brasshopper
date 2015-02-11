@@ -70,6 +70,7 @@ Walker.prototype.buildBody = function() {
     isStatic: true,
     texture: boxTexture,
     color: this.color,
+    parentScale: this.scale,
   });
 
   this.rightLeg = new OffsetBox({
@@ -80,6 +81,7 @@ Walker.prototype.buildBody = function() {
     isStatic: true,
     texture: boxTexture,
     color: this.color,
+    parentScale: this.scale,
   });
 
   this.leftArm = new OffsetBox({
@@ -92,6 +94,7 @@ Walker.prototype.buildBody = function() {
     damageMultiplier: .85,
     texture: boxTexture,
     color: this.color,
+    parentScale: this.scale,
   });
   this.rightArm = new OffsetBox({
     size: [.115, .9, .115],
@@ -103,13 +106,14 @@ Walker.prototype.buildBody = function() {
     damageMultiplier: .85,
     texture: boxTexture,
     color: this.color,
+    parentScale: this.scale,
   });
 
   this.head = new OffsetContainer({
     thing: new DataThing({
       texture: boxTexture,
       data: HeadData,
-      uScale: 1,
+      uScale: .015,
       position: [0, -2 + 2.3, -.1],
       name: "head",
       color: this.color,
@@ -117,6 +121,7 @@ Walker.prototype.buildBody = function() {
       yaw: Math.PI,
       damageMultiplier: 4,
     }),
+    parentScale: this.scale,
   });
 
   this.torso = new Box({
@@ -128,6 +133,7 @@ Walker.prototype.buildBody = function() {
     damageMultiplier: 1.7,
     texture: boxTexture,
     color: this.color,
+    parentScale: this.scale,
   });
 
   // this.fakehead = new Box({

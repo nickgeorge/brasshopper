@@ -12,6 +12,7 @@ goog.require('Walker');
  * @struct
  */
 Hero = function(message) {
+  // message.uScale = 2;
   goog.base(this, message);
 
   this.keyMove = vec3.create();
