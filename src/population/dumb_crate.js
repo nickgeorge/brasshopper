@@ -79,6 +79,8 @@ DumbCrate.prototype.updateFromReader = function(reader) {
   vec3.copy(this.position, proto.position.get());
   vec3.copy(this.velocity, proto.velocity.get());
   quat.copy(this.upOrientation, proto.upOrientation.get());
+  // quat.copy(this.color, proto.color.get());
+  this.setColor(proto.color.get());
 
   // TODO: handle size change
 };
@@ -92,5 +94,6 @@ DumbCrate.prototype.updateFromReader = function(reader) {
 DumbCrate.Proto = function() {
   goog.base(this);
   this.size = this.addField(10, new Vec3Field());
+  this.color = this.addField(11, new QuatField());
 };
 goog.inherits(DumbCrate.Proto, Thing.Proto);

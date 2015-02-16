@@ -18,7 +18,7 @@ Powerup = function(message) {
 
   this.model = new DataThing({
     data: LightningData,
-    color: [1, 1, 0, .6],
+    color: [1, 1, 0, .8],
     name: "model",
     isStatic: true,
     uScale: 1.5,
@@ -38,6 +38,12 @@ Powerup.readMessage = function(reader) {
     velocity: reader.readVec3(),
     upOrientation: reader.readVec4(),
   }
+};
+
+Powerup.prototype.render = function() {
+  Env.gl.getActiveProgram().setUseLighting(false);
+  goog.base(this, 'render');
+  Env.gl.getActiveProgram().setUseLighting(true);
 };
 
 

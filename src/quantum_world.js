@@ -22,8 +22,8 @@ QuantumWorld = function() {
   this.light = null;
   this.setBackgroundColor([0, 0, 0, 1]);
 
-  this.playMusic = false;
-  this.music = Sounds.get(SoundList.SPLIT_YOUR_INFINITIVES);
+  this.playMusic = true;
+  this.music = Sounds.get(SoundList.NIL);
   this.music.loop = true;
 
   this.score = 0;

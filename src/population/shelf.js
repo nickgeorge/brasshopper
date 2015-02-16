@@ -17,9 +17,9 @@ Shelf = function(message) {
   this.size = message.size;
   this.box = new Box({
     size: message.size,
-    texture: Textures.get(TextureList.WALL),
+    texture: Textures.get(TextureList.SPACE),
     // texturesByFace: message.texturesByFace,
-    textureCounts: [50, 50],
+    textureCounts: [9, 9],
     // textureCountsByFace: message.textureCountsByFace,
     invert: true,
     color: message.color,
@@ -63,6 +63,14 @@ Shelf.prototype.updateFromReader = function(reader) {
   quat.copy(this.upOrientation, proto.upOrientation.get());
 
   // TODO: handle size change
+};
+
+
+Shelf.prototype.draw = function() {
+
+  Env.gl.getActiveProgram().setUseLighting(false);
+  goog.base(this, 'draw');
+  Env.gl.getActiveProgram().setUseLighting(true);
 };
 
 
