@@ -22,7 +22,7 @@ QuantumWorld = function() {
   this.light = null;
   this.setBackgroundColor([0, 0, 0, 1]);
 
-  this.playMusic = false;
+  this.playMusic = true;
   this.music = Sounds.get(SoundList.NIL);
   this.music.loop = true;
 
