@@ -34,18 +34,6 @@ goog.inherits(DumbCrate, Thing);
 Types.registerType(DumbCrate, QuantumTypes.DUMB_CRATE);
 
 
-DumbCrate.readMessage = function(reader) {
-  return {
-    klass: DumbCrate,
-    alive: reader.readByte(),
-    position: reader.readVec3(),
-    velocity: reader.readVec3(),
-    upOrientation: reader.readVec4(),
-    size: reader.readVec3()
-  }
-};
-
-
 DumbCrate.prototype.update = function(message) {
   this.velocity = message.velocity;
   this.position = message.position;
@@ -75,13 +63,11 @@ DumbCrate.newFromReader = function(reader) {
 DumbCrate.prototype.updateFromReader = function(reader) {
   var proto = this.updateProto;
   proto.read(reader);
-  this.alive = proto.alive.get();
-  vec3.copy(this.position, proto.position.get());
-  vec3.copy(this.velocity, proto.velocity.get());
-  quat.copy(this.upOrientation, proto.upOrientation.get());
+  this.updateFromProto(proto);
   // quat.copy(this.color, proto.color.get());
-  this.setColor(proto.color.get());
-
+  if (proto.color.isSet()) {
+    this.setColor(proto.color.get());
+  }
   // TODO: handle size change
 };
 

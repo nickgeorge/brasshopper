@@ -83,11 +83,8 @@ Hero.prototype.getEyePosition = function(out) {
 Hero.prototype.updateFromReader = function(reader) {
   var proto = this.updateProto;
   proto.read(reader);
+  this.updateFromProto(proto);
 
-  this.alive = proto.alive.get();
-  vec3.copy(this.position, proto.position.get());
-  vec3.copy(this.velocity, proto.velocity.get());
-  quat.copy(this.upOrientation, proto.upOrientation.get());
   quat.copy(this.viewRotation, proto.viewRotation.get());
   quat.copy(this.color, proto.color.get());
   this.setLegAngle(proto.legAngle.get());

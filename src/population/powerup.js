@@ -21,7 +21,7 @@ Powerup = function(message) {
     color: [1, 1, 0, .8],
     name: "model",
     isStatic: true,
-    uScale: 1.5,
+    uScale: 2,
 
   });
   this.addPart(this.model);
@@ -50,24 +50,21 @@ Powerup.prototype.render = function() {
 Powerup.prototype.updateFromReader = function(reader) {
   var proto = this.updateProto;
   proto.read(reader);
-  this.alive = proto.alive.get();
-  vec3.copy(this.position, proto.position.get());
-  vec3.copy(this.velocity, proto.velocity.get());
-  quat.copy(this.upOrientation, proto.upOrientation.get());
 
-  // TODO: handle size change
+  this.updateFromProto(proto);
 };
 
 
 Powerup.newFromReader = function(reader) {
   var proto = new Powerup.Proto();
   proto.read(reader);
-  return new Powerup({
+  var powerup = new Powerup({
     alive: proto.alive.get(),
     position: proto.position.get(),
     velocity: proto.velocity.get(),
     upOrientation: proto.upOrientation.get(),
   });
+  return powerup;
 };
 
 /**

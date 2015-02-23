@@ -1,7 +1,6 @@
 goog.provide('Walker');
 
 goog.require('Thing');
-goog.require('LightningData');
 
 
 /**
